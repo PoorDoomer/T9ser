@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 class SportList(APIView):
     """
     List all sports, or create a new sport.
@@ -28,7 +29,19 @@ class SportList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_BAD_REQUEST)
 
+class PendingApprovalView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get(self, request, format=None):
+        # Fetch all matches where the current user is the host
+        hosted_matches = Match.objects.filter(host_user=request.user)
+        # Fetch all user match relations that are pending approval for these matches
+        pending_approvals = UserMatch.objects.filter(
+            match__in=hosted_matches,
+            is_approved=False  # Assuming there is an 'is_approved' field in UserMatch model
+        )
+        serializer = UserMatchSerializer(pending_approvals, many=True)
+        return Response(serializer.data)
 class MatchList(APIView):
     """
     List all matches, or create a new match.

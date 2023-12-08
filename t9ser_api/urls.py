@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SportList,MatchList, MatchDetail, UserMatchList, UserMatchDetail,MatchParticipants,LoginView,UserCreate,ApproveParticipant,UserProfileView,MyMatchView,WithdrawFromMatch# Import other views as needed
+from .views import PendingApprovalView,SportList,MatchList, MatchDetail, UserMatchList, UserMatchDetail,MatchParticipants,LoginView,UserCreate,ApproveParticipant,UserProfileView,MyMatchView,WithdrawFromMatch# Import other views as needed
 
 urlpatterns = [
     path('sports/', SportList.as_view(), name='sport-list'),
@@ -14,4 +14,5 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='user-profile'),
     path('my-matches/', MyMatchView.as_view(), name='my-matches'),
     path('usermatches/withdraw/<int:pk>/', WithdrawFromMatch.as_view(), name='withdraw-match'),
+    path('usermatches/approve/<int:pk>/', PendingApprovalView.as_view(), name='pending-approval-match'),
 ]
