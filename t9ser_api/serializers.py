@@ -25,6 +25,14 @@ class MatchSerializer(serializers.Serializer):
     players_needed = serializers.IntegerField()
     date_time = serializers.DateTimeField()
     created_at = serializers.DateTimeField(read_only=True)
+    name = serializers.SerializerMethodField()
+    def get_name(self, obj):
+        # Assuming host_user is a ForeignKey to a User model that has a field 'username'
+        host_username = obj.host_user.username if obj.host_user else 'Unknown'
+        # Formatting the date_time to a readable format
+        date_time_str = obj.date_time.strftime('%Y-%m-%d %H:%M') if obj.date_time else 'Unknown'
+        # Concatenating the fields
+        return f"{obj.location} hosted by {host_username} at {date_time_str}"
 
     def create(self, validated_data):
         return Match.objects.create(**validated_data)

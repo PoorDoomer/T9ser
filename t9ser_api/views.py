@@ -55,6 +55,8 @@ class MatchList(APIView):
         location = request.query_params.get('location')
         if location:
             matches = matches.filter(location__icontains=location)
+        price = request.query_params.get('price')
+        
         if price:
             matches = matches.filter(price__lte=price)
 
